@@ -16,38 +16,39 @@ SQL Injection é uma vulnerabilidade de aplicações web que permite a manipula�
 [SQL Para Iniciantes - DevMedia](https://www.devmedia.com.br/sql-select-guia-para-iniciantes/29530)
 
 
-
-
-- Consulta SQL
-
-> Exemplo de consulta de todas as colunas da tabela produto que o id_produto seja igual ao id passado pela aplicação:
-
-```
-SELECT * FROM produtos WHERE id_produto = ${id}
-```
-
-- Requisição da Aplicação
-
-> Exemplo da requisição feita pela aplicação buscando somente o produto que tenha id = 10:
-
-```
-https://www.meusiteficticio.com.br/produtos.php?id=10
-```
-<br>
-
 ### Exemplos
 
 #### Dados Ocultos
 
+Vamos supor que uma página de venda de produto possua uma url que realize um GET passando o id de um produto como parametro para realizar a consulta no banco.
+
+_Requisição da aplicação:_ 
+
 ```
- ' OR 1 = 1 --
+https://www.meusiteficticio.com.br/produtos.php?id=10
+```
+_Query Sql:_
+
+```
+SELECT * FROM produtos WHERE id_produto = ${id} 
 ```
 
- Inserindo este comando sql no final da url "https://www.meusiteficticio.com.br/produtos.php?id=10" estaríamos concatenando a query que está pronta na aplicação. O resultado seria este:
+Repare que o id é inserido no final da query sql e caso a aplicação não trate esta consulta da maneira correta é possível concatenar outras queries sql conseguindo assim dados ocultos da aplicação.
+
+Vamos tentar conseguir que a alpicação nos liste todos os produtos que existem no banco de dados:
+
+```
+ https://www.meusiteficticio.com.br/produtos.php?id=10' OR 1 = 1 --
+
+```
+
+Inserindo este comando sql no final da url estamos concatenando a query que está pronta na aplicação. O resultado seria este:
 
 ```
 SELECT * FROM produtos WHERE id_produto = ${id} OR 1 = 1
 ```
 
-Desta forma teríamos acesso a detalhes de produtos que não estão disponíveis na aplicação.
+Desta forma temos acesso a detalhes de produtos que não estão disponíveis na aplicação.
+
+<!-- #### Manipulando a Lógica da Aplicação -->
 
